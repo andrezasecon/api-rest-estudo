@@ -1,13 +1,16 @@
-package com.example.people.exceptions.service.impl;
+package com.example.people.service.impl;
 
+import com.example.people.dto.PersonDto;
 import com.example.people.exceptions.NotFoundException;
+import com.example.people.mapper.PersonMapper;
 import com.example.people.model.Person;
 import com.example.people.repository.PersonRepository;
-import com.example.people.exceptions.service.PersonService;
+import com.example.people.service.PersonService;
 import com.example.people.util.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,11 +23,14 @@ public class PersonServiceImpl implements PersonService {
     @Autowired
     private MessageUtil messageUtil;
 
+    @Autowired
+    private PersonMapper personMapper;
+
     @Override
-    public Person getPersonById(Long id) {
-        return personRepository.findById(id).orElseThrow(
+    public PersonDto getPersonById(Long id) {
+        return personMapper.toDto(personRepository.findById(id).orElseThrow(
                 ()-> new NotFoundException(messageUtil.getMessage("notFound", null, Locale.getDefault()))
-        );
+        ));
     }
 
     @Override
@@ -33,22 +39,19 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public void savePerson(Person person) {
+    public void savePerson(PersonDto personDto) {
+        Person person = personMapper.toEntity(personDto);
         personRepository.save(person);
 
     }
 
     @Override
-    public void updatePerson(Long id, Person person) {
-        Person p = personRepository.findById(id).orElseThrow(
+    public void updatePerson(Long id, PersonDto personDto) {
+        Person person = personRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(messageUtil.getMessage("notFound", null, Locale.getDefault()))
         );
-        p.setName(person.getName());
-        p.setEmail(person.getEmail());
-        p.setCpf(person.getCpf());
-        p.setAddress(person.getAddress());
-        p.setPhone(person.getPhone());
-        personRepository.save(p);
+        personMapper.updateEntity(personDto, person);
+        personRepository.save(person);
     }
 
     @Override
