@@ -1,7 +1,7 @@
 package com.example.people.controller;
 
 import com.example.people.model.Person;
-import com.example.people.service.PersonService;
+import com.example.people.exceptions.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

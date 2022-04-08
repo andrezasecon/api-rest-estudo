@@ -1,4 +1,4 @@
-package com.example.people.service;
+package com.example.people.exceptions.service;
 
 import com.example.people.model.Person;
 
