@@ -1,55 +1,57 @@
 package com.example.people.service;
 
+import com.example.people.exceptions.NotFoundException;
 import com.example.people.model.Person;
 import com.example.people.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class PersonServiceImpl implements PersonService{
 
     @Autowired
-    private PersonRepository repository;
+    private PersonRepository personRepository;
 
     @Override
     public Person getPersonById(Long id) {
 
-        return repository.findById(id).orElse(null);
+        return personRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Person not found")
+        );
     }
 
     @Override
     public List<Person> getAllPerson() {
-        return repository.findAll();
+        return personRepository.findAll();
     }
 
     @Override
     public void savePerson(Person person) {
-        repository.save(person);
+        personRepository.save(person);
 
     }
 
     @Override
     public void updatePerson(Long id, Person person) {
-        Person p = repository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("Person not found")
+        Person p = personRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Person not found")
         );
         p.setName(person.getName());
         p.setEmail(person.getEmail());
         p.setCpf(person.getCpf());
-        p.setEndereco(person.getEndereco());
-        p.setTelefone(person.getTelefone());
-        repository.save(p);
+        p.setAddress(person.getAddress());
+        p.setPhone(person.getPhone());
+        personRepository.save(p);
     }
 
     @Override
     public void deletePersonById(Long id) {
-        Person p = repository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("Person not found")
+        Person p = personRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Person not found")
         );
-        repository.deleteById(id);
+        personRepository.deleteById(id);
 
     }
 
