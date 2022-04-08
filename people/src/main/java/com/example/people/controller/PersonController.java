@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -16,28 +15,28 @@ import java.util.Map;
 public class PersonController {
 
     @Autowired
-    private PersonService service;
+    private PersonService personService;
 
     private Map<String, Object> response = new HashMap<>();
 
     @GetMapping("/all")
     public ResponseEntity<?> findAllPerson(){
         response.clear();
-        response.put("people", service.getAllPerson());
+        response.put("people", personService.getAllPerson());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     private ResponseEntity<?> getPersonById(@PathVariable Long id){
         response.clear();
-        response.put("person", service.getPersonById(id));
+        response.put("person", personService.getPersonById(id));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/new")
     private ResponseEntity<?> savePerson(@RequestBody Person person){
         response.clear();
-        service.savePerson(person);
+        personService.savePerson(person);
         response.put("Message", "Save person successfully");
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -45,8 +44,7 @@ public class PersonController {
     @PutMapping("/{id}")
     private ResponseEntity<?> updatePerson(@PathVariable Long id, @RequestBody Person person){
         response.clear();
-        service.getPersonById(id);
-        service.savePerson(person);
+        personService.updatePerson(id, person);
         response.put("message", "Person update successfully");
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
@@ -54,7 +52,7 @@ public class PersonController {
     @DeleteMapping("/{id}")
     private ResponseEntity<?> deletePersonById(@PathVariable Long id){
         response.clear();;
-        service.deletePersonById(id);
+        personService.deletePersonById(id);
         response.put("message", "Person deleted successfully");
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
